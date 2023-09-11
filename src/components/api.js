@@ -15,7 +15,7 @@ Your API key: 38422328-85a02d361c587760bb979b0d3;
 export const searchImg = async (itemToSearch, page) => {
     const API_KEY = '38422328-85a02d361c587760bb979b0d3';
     
-    const response = await axios.get(`?key=${API_KEY}&q=${itemToSearch}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=100`);
+    const response = await axios.get(`?key=${API_KEY}&q=${itemToSearch}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=12`);
     //console.log(response);
     /*const data = await response.json();
     if (data.totalHits !== 0) {
