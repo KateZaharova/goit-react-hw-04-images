@@ -4,108 +4,88 @@ import { Button } from "../Button/Button";
 import { searchImg } from "../api";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { Modal } from "../Modal/Modal";
-
-const { Component } = require("react");
+import { useState, useEffect } from "react";
+//const { Component } = require("react");
 
 //query переименовала на request
 
-export class App extends Component {
-  state = {
-    request: '',
-    loading: false,
-    images: [],
-    page: 1,
-    currentBigImage: '',
-    totalHits:0,
+export const App = () => {
+  const [request, setRequest] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
+  const [currentBigImage, setCurrentBigImage] = useState('');
+  const [totalHits, setTotalHits] = useState(0);
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    setRequest(evt.target.elements.request.value);
+    setImages([]);
+    setPage(1);
+    ;
+  }
+
+  const handleLoadMore = () => {
+    setPage(prevItems => prevItems + 1);
+  };
+  
+  const showImage = (largeImageURL) => {
+   // window.addEventListener('keydown', onKeyPress);
+    setCurrentBigImage(largeImageURL);
   };
 
-  handleSubmit = evt => {
-    console.log(evt)
-    evt.preventDefault();
-    this.setState({
-      request: evt.target.elements.request.value,
-      images: [],
-      page:1
-    });
-}
-
-  
-  handleLoadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
-   };
-
-  
-  showImage = (largeImageURL) => {
-    window.addEventListener('keydown', this.onKeyPress);
-    this.setState({ currentBigImage: largeImageURL }); 
-  }
-
-  onClickBigImage = (evt) => {
+  const onClickBigImage = (evt) => {
     if (evt.target === evt.currentTarget) {
-    window.removeEventListener('keydown', this.onKeyPress);  
-      this.setState({currentBigImage: ""});
+     //window.removeEventListener('keydown', onKeyPress);
+      setCurrentBigImage('');
     }
-  }
+  };
+
+  const onKeyPress = (evt) => {
+    if (evt.code === 'Escape') {
+     // window.removeEventListener('keydown', onKeyPress);
+      setCurrentBigImage('');
+    }
+  };
   
-  onKeyPress = (evt) => {
-    if (evt.code === 'Escape' && this.state.currentBigImage.length > 0) {
-    window.removeEventListener('keydown', this.onKeyPress);
-      this.setState({currentBigImage: ""});
-    }
-}
-
- 
-
- async componentDidUpdate(prevProps, prevState) {
-    if (prevState.request !== this.state.request ||
-      prevState.page !== this.state.page) {
-      
+  useEffect(() => {
+    async function getImages() {
       try {
-        this.setState({ loading: true });
-        const newImages = await searchImg(this.state.request, this.state.page);
-        this.setState(prevState => ({
-          images: [...prevState.images, ...newImages.hits],
-          totalHits: newImages.totalHits,
-        }))
-      } catch (error) {
+        setLoading(true);
+        const newImages = await searchImg(request, page);
+        setImages(prevItems => [...prevItems, ...newImages.hits]);
+        setTotalHits(newImages.totalHits);
+      }
+      catch (error) {
         console.log(error);
       } finally {
-        this.setState({ loading: false });
+        setLoading(false);
       }
-      //HTTP REQUEST
-    }
-  }
-  
+  //HTTP REQUEST
+}
+    if (request !== '') {
+      getImages();
+    }    
+    }, [request, page]); 
+ 
 
-  render() {
-    console.log(this.state.images);
-    return (
+   return (
       <div>
-        <SearchBar onSubmit={this.handleSubmit}/>  
-        <ImageGallery images={this.state.images} onClick={this.showImage} />
-        {this.state.loading && <Loader loader={this.state.loading} />}
-        {(this.state.images.length > 0) &&
-          (this.state.images.length < this.state.totalHits) &&
-          (!this.state.loading) &&
-          <Button onClick={this.handleLoadMore} />
+        <SearchBar onSubmit={handleSubmit}/>  
+        <ImageGallery images={images} onClick={showImage} />
+        {loading && <Loader loader={loading} />}
+        {(images.length > 0) &&
+          (images.length < totalHits) &&
+          (!loading) &&
+          <Button onClick={handleLoadMore} />
         }
-        
-        {this.state.currentBigImage.length > 0 && <Modal largeImageURL={this.state.currentBigImage} onClickBigImage={this.onClickBigImage} onKeyPress={this.onKeyPress} />}
+       {currentBigImage.length > 0 &&
+         <Modal largeImageURL={currentBigImage}
+           onClickBigImage={onClickBigImage}
+          onKeyPress={onKeyPress} 
+         />}
         
     </div>
   );
-}
 };
 
-
-/*Scroll:
-const height = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.clientHeight,
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-    );
-    window.scrollTo(0, height);*/

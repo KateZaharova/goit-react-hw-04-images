@@ -1,4 +1,4 @@
-import { Loader } from "../Loader/Loader";
+/*import { Loader } from "../Loader/Loader";
 import { SearchBar } from "components/SearchBar/Searchbar";
 import { Button } from "../Button/Button";
 import { searchImg } from "../api";
@@ -42,6 +42,7 @@ export class App extends Component {
     this.setState({ currentBigImage: largeImageURL }); 
   }
 
+    
   onClickBigImage = (evt) => {
     if (evt.target === evt.currentTarget) {
     window.removeEventListener('keydown', this.onKeyPress);  
@@ -49,6 +50,7 @@ export class App extends Component {
     }
   }
   
+
   onKeyPress = (evt) => {
     if (evt.code === 'Escape' && this.state.currentBigImage.length > 0) {
     window.removeEventListener('keydown', this.onKeyPress);
@@ -98,3 +100,4 @@ export class App extends Component {
   );
 }
 };
+*/
