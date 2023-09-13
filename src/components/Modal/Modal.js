@@ -8,12 +8,22 @@ import { useEffect } from "react";
 
 export const Modal = ({largeImageURL, onClickBigImage, onKeyPress}) => {
  
-  useEffect(() => {
+ /* useEffect(() => {
     if (largeImageURL.length > 0) {
       window.addEventListener('keydown', onKeyPress);
     } else window.removeEventListener('keydown', onKeyPress);
   }, [largeImageURL, onKeyPress]);
- 
+ */
+  
+useEffect(() => {
+     window.addEventListener('keydown', onKeyPress);
+  return () => {
+    window.removeEventListener('keydown', onKeyPress);
+  };
+  }, [onKeyPress]);
+
+
+
   return (
     <Overlay className="overlay"
       onClick={(evt) => { onClickBigImage(evt) }}

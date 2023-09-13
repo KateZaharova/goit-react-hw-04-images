@@ -42,6 +42,7 @@ export const App = () => {
   };
 
   const onKeyPress = (evt) => {
+    console.log(evt.code)
     if (evt.code === 'Escape') {
      // window.removeEventListener('keydown', onKeyPress);
       setCurrentBigImage('');
